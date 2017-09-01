@@ -35,7 +35,7 @@ func UpdateComponentStatus(componentStatus int, componentIDs ...int) {
 			"to Cachet status", componentStatus)
 		c := cachet.Component{
 			ID:      id,
-			Status:  componentStatus,
+			Status:  fmt.Sprintf("%d", componentStatus),
 			Enabled: true,
 		}
 		_, _, err := client.Components.Update(id, &c)
@@ -236,7 +236,12 @@ func main() {
 	}
 
 	log.Print("Initializing Cachet client...")
-	client, _ = cachet.NewClient(config.CachetEndpoint, nil)
+	client, err = cachet.NewClient(config.CachetEndpoint, nil)
+	if err != nil {
+		log.Println("Init fail:", err)
+		return
+	}
+
 	log.Print("Pinging Cachet API endpoint...")
 	pong, resp, err := client.General.Ping()
 
